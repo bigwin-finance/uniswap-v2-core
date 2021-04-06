@@ -3,12 +3,15 @@ pragma solidity =0.5.16;
 import './interfaces/IUniswapV2ERC20.sol';
 import './libraries/SafeMath.sol';
 
+// UNI代币(基于ERC20代币标准)
+// 交易对的代币
 contract UniswapV2ERC20 is IUniswapV2ERC20 {
     using SafeMath for uint;
 
     string public constant name = 'Uniswap V2';
     string public constant symbol = 'UNI-V2';
     uint8 public constant decimals = 18;
+    // 当前代币的流通总量
     uint  public totalSupply;
     mapping(address => uint) public balanceOf;
     mapping(address => mapping(address => uint)) public allowance;
@@ -37,12 +40,14 @@ contract UniswapV2ERC20 is IUniswapV2ERC20 {
         );
     }
 
+    // 造币
     function _mint(address to, uint value) internal {
         totalSupply = totalSupply.add(value);
         balanceOf[to] = balanceOf[to].add(value);
         emit Transfer(address(0), to, value);
     }
 
+    // 销毁
     function _burn(address from, uint value) internal {
         balanceOf[from] = balanceOf[from].sub(value);
         totalSupply = totalSupply.sub(value);
@@ -54,6 +59,7 @@ contract UniswapV2ERC20 is IUniswapV2ERC20 {
         emit Approval(owner, spender, value);
     }
 
+    // 转账
     function _transfer(address from, address to, uint value) private {
         balanceOf[from] = balanceOf[from].sub(value);
         balanceOf[to] = balanceOf[to].add(value);

@@ -1,0 +1,43 @@
+@startuml
+actor ProviderAndTrader as wallet
+control Periphery_Contract
+control Factory_Contract
+control Pair_Contract
+control ERC20_Contract
+
+
+== Provide ==
+
+wallet -> Periphery_Contract: 为TokenA,TokenB创建交易对
+Periphery_Contract -> Factory_Contract
+Factory_Contract -> Pair_Contract: 创建 TokenA/TokenB 交易对
+Pair_Contract -> Pair_Contract: createPair(TokenA,TokenB)
+Pair_Contract -> ERC20_Contract: 创建 TokenA/TokenB 对应的代币pair
+ERC20_Contract -> ERC20_Contract: initialize(TokenA,TokenB)
+
+
+== Deposit ==
+
+wallet -> Periphery_Contract: 为TokenA,TokenB提供流动性
+Periphery_Contract -> ERC20_Contract: 往交易对pair存入代币TokenA
+ERC20_Contract -> ERC20_Contract: tokenA.transfer(pair.address, tokenAAmount)
+Periphery_Contract -> ERC20_Contract: 往交易对pair存入代币TokenB
+ERC20_Contract -> ERC20_Contract: tokenB.transfer(pair.address, tokenBAmount)
+Periphery_Contract -> Pair_Contract: 产生代币
+Pair_Contract -> Pair_Contract: pair.mint(wallet.address)
+Pair_Contract --> wallet: 收到代币
+
+
+== Swap ==
+
+wallet -> Periphery_Contract: 通过TokenA兑换出一些TokenB
+Periphery_Contract -> ERC20_Contract: 把要兑换的TokenA转入交易对
+ERC20_Contract -> ERC20_Contract : tokenA.transfer(pair.address, swapAmount)
+Periphery_Contract -> Pair_Contract: 发起TokenA->TokenB的兑换
+Pair_Contract -> Pair_Contract: pair.swap()
+Pair_Contract --> wallet: 收到TokenB
+
+
+@enduml
+
+
