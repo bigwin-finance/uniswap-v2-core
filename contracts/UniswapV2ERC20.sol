@@ -4,7 +4,7 @@ import './interfaces/IUniswapV2ERC20.sol';
 import './libraries/SafeMath.sol';
 
 // UNI代币(基于ERC20代币标准)
-// 交易对的代币
+// 流動性代幣 ERC20
 contract UniswapV2ERC20 is IUniswapV2ERC20 {
     using SafeMath for uint;
 
